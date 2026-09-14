@@ -1,0 +1,14 @@
+{
+  "lang": "en",
+  "n_records": 10000,
+  "n_compared_to_cvd": 9927,
+  "cvd_match_rate_main_only": 0.8520197441321649,
+  "cvd_match_rate": 0.9322050972096303,
+  "llm_more_specific_rate": 0.720560088647124,
+  "n_compared_to_johnny5": 9858,
+  "johnny5_errors": 136,
+  "johnny5_match_rate": 0.7113004666260905,
+  "chronological_rate": 1.0,
+  "records_with_out_of_range_years": 8,
+  "records_with_unsupported_stages": 320
+}

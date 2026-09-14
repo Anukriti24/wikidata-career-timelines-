@@ -1,0 +1,20 @@
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# Large final datasets - downloaded at runtime from a GitHub Release instead of
+# being committed (they're 139MB/325MB, over GitHub's 100MB per-file limit).
+# See app.py's ensure_datasets() / src/data_fetch.py.
+data/final/*.json
+
+# Pipeline checkpoint files (parquet) - regenerable, not needed to run the app
+data/processed/*.parquet
+
+# Raw source downloads (not committed - see data/raw/DOWNLOAD_LINKS.txt)
+data/raw/*.csv
+
+# OS/editor cruft
+.DS_Store
+Thumbs.db

@@ -1,0 +1,11 @@
+Raw data sources for this project (not committed to git - too large)
+
+Pantheon dataset downloads
+https://pantheon.world/data/datasets
+-> download the 2025 update ("person_2025_update.csv") and save it as data/raw/pantheon.csv
+
+A cross-verified database of notable people, 3500BC-2018AD (PMC)
+https://pmc.ncbi.nlm.nih.gov/articles/PMC9184645/
+-> see the paper's Data Availability section for the actual dataset download
+   (Sciences Po Dataverse, DOI 10.21410/7E4/RDAG3O)
+-> save the CSV as data/raw/cross_verified_database.csv

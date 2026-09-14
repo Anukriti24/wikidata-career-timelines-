@@ -1,0 +1,9 @@
+{
+  "lang": "de",
+  "n_records": 10000,
+  "cvd_occupation_comparison": "not_applicable (English-only ground truth)",
+  "johnny5_baseline": "not_applicable (English-only classifier)",
+  "chronological_rate": 1.0,
+  "records_with_out_of_range_years": 10,
+  "records_with_unsupported_stages": 434
+}

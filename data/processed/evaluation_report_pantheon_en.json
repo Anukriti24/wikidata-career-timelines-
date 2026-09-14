@@ -1,0 +1,13 @@
+{
+  "lang": "en",
+  "n_records": 10000,
+  "n_compared_to_pantheon": 9957,
+  "pantheon_match_rate": 0.6582303906799237,
+  "llm_more_specific_rate": 0.5882293863613538,
+  "n_compared_to_johnny5": 9989,
+  "johnny5_errors": 7,
+  "johnny5_match_rate": 0.6594253679046952,
+  "chronological_rate": 1.0,
+  "records_with_out_of_range_years": 132,
+  "records_with_unsupported_stages": 696
+}

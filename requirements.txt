@@ -1,0 +1,40 @@
+# Core data handling
+pandas>=2.0
+numpy>=1.24
+
+# HTTP requests (Wikidata, Wikipedia, Ollama)
+requests>=2.31
+
+# Progress bars
+tqdm>=4.66
+
+# Wikidata SPARQL querying
+SPARQLWrapper>=2.0
+
+# Retry logic for APIs
+tenacity>=9.0.0
+
+# Data validation (LLM JSON outputs)
+pydantic>=2.8.0
+
+# Graph construction (career transition network)
+networkx>=3.3
+
+# Efficient storage for processed outputs
+pyarrow>=17.0.0
+
+# Evaluation & baselines
+scikit-learn>=1.3
+rapidfuzz>=3.6
+
+# Johnny5 baseline classifier (vendor/johnny5) runtime deps
+nltk>=3.8
+mwparserfromhell>=0.6
+beautifulsoup4>=4.12
+python-dateutil>=2.8
+
+# Plotting (analysis in notebooks / evaluation)
+matplotlib>=3.8
+
+# Name -> timeline lookup app (app.py)
+streamlit>=1.63

@@ -1,4 +1,7 @@
 import html
+import os
+import tempfile
+import threading
 from pathlib import Path
 
 import pandas as pd
@@ -17,23 +20,36 @@ DATASET_URLS = {
     "famous_individuals_cvd.json": f"{_RELEASE_BASE}/famous_individuals_cvd.json",
 }
 
+# Streamlit runs every user session as a thread inside one process, so two sessions
+# can both see a dataset missing and race to download it. This lock serializes
+# ensure_datasets() across those threads; each download also uses a unique temp
+# filename (mkstemp) so even a missed lock can't cause two threads to fight over
+# the same partial file.
+_download_lock = threading.Lock()
+
 
 def ensure_datasets() -> None:
     """Download any dataset files missing locally (fresh Streamlit Cloud containers
     start with an empty data/final/) from the GitHub Release that hosts them."""
     DATA_DIR.mkdir(parents=True, exist_ok=True)
-    for filename, url in DATASET_URLS.items():
-        dest = DATA_DIR / filename
-        if dest.exists():
-            continue
-        with st.spinner(f"Downloading {filename} (one-time)..."):
-            tmp = dest.with_suffix(".part")
-            with requests.get(url, stream=True, timeout=60) as resp:
-                resp.raise_for_status()
-                with open(tmp, "wb") as f:
-                    for chunk in resp.iter_content(chunk_size=1024 * 1024):
-                        f.write(chunk)
-            tmp.rename(dest)
+    with _download_lock:
+        for filename, url in DATASET_URLS.items():
+            dest = DATA_DIR / filename
+            if dest.exists():
+                continue
+            with st.spinner(f"Downloading {filename} (one-time)..."):
+                fd, tmp_name = tempfile.mkstemp(dir=DATA_DIR, prefix=f"{filename}.", suffix=".part")
+                tmp = Path(tmp_name)
+                try:
+                    with requests.get(url, stream=True, timeout=60) as resp:
+                        resp.raise_for_status()
+                        with os.fdopen(fd, "wb") as f:
+                            for chunk in resp.iter_content(chunk_size=1024 * 1024):
+                                f.write(chunk)
+                    tmp.rename(dest)
+                except Exception:
+                    tmp.unlink(missing_ok=True)
+                    raise
 
 # Friendly names shown in the dataset picker instead of raw filenames. Any dataset file
 # that shows up without an entry here falls back to a title-cased version of its stem.

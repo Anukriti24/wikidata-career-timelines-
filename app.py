@@ -289,6 +289,64 @@ def find_matches(df: pd.DataFrame, query: str, limit: int = 8):
     return df.loc[idx]
 
 
+def _go(view: str, qid: str | None = None) -> None:
+    """Switch view via the URL's query params (?view=...&qid=...) so browsing the
+    full list and a person's detail page are bookmarkable/shareable links, not just
+    in-memory state - and the browser's back button works too."""
+    st.query_params["view"] = view
+    if qid is None:
+        st.query_params.pop("qid", None)
+    else:
+        st.query_params["qid"] = qid
+    st.rerun()
+
+
+BROWSE_PAGE_SIZE = 50
+
+
+def render_browse_page(df: pd.DataFrame) -> None:
+    st.markdown('<div class="section-label">All people in this dataset</div>', unsafe_allow_html=True)
+    if st.button("← Back to search"):
+        _go("search")
+
+    filter_text = st.text_input("Filter by name", placeholder="Start typing to filter...")
+    listed = df if not filter_text.strip() else df[df["display_name"].str.contains(filter_text.strip(), case=False, na=False)]
+    listed = listed.sort_values("display_name")
+
+    st.caption(f"{len(listed):,} of {len(df):,} people")
+    if listed.empty:
+        return
+
+    total_pages = max(1, -(-len(listed) // BROWSE_PAGE_SIZE))  # ceil division
+    # Keying the widget by filter_text resets the page back to 1 whenever the
+    # filter changes, instead of staying on a page number that may no longer exist.
+    page = st.number_input(
+        f"Page (1–{total_pages})", min_value=1, max_value=total_pages, value=1, step=1,
+        key=f"browse_page_{filter_text}",
+    )
+
+    start = (page - 1) * BROWSE_PAGE_SIZE
+    page_rows = listed.iloc[start:start + BROWSE_PAGE_SIZE]
+
+    for row in page_rows.itertuples():
+        label = f"{row.display_name}  —  {format_years(row.birthyear, row.deathyear)}"
+        if st.button(label, key=f"browse_person_{row.qid}", use_container_width=True):
+            _go("detail", row.qid)
+
+
+def render_detail_page(df: pd.DataFrame, qid: str) -> None:
+    matches = df[df["qid"] == qid]
+    if matches.empty:
+        st.warning("That person isn't in the currently selected dataset/language.")
+        if st.button("← Back to list"):
+            _go("browse")
+        return
+
+    if st.button("← Back to list"):
+        _go("browse")
+    render_person(matches.iloc[0])
+
+
 def main() -> None:
     st.markdown(_CSS, unsafe_allow_html=True)
     st.markdown(
@@ -309,6 +367,18 @@ def main() -> None:
         lang = st.radio("Language", list(LANGUAGE_LABELS), format_func=lambda l: LANGUAGE_LABELS[l], horizontal=True)
         df = select_lang(load_dataset(str(chosen)), lang)
         st.caption(f"{len(df):,} people loaded")
+        if st.button("View all in detail →", use_container_width=True):
+            _go("browse")
+
+    view = st.query_params.get("view", "search")
+
+    if view == "detail":
+        render_detail_page(df, st.query_params.get("qid", ""))
+        return
+
+    if view == "browse":
+        render_browse_page(df)
+        return
 
     query = st.text_input("Person's name", placeholder="e.g. Albert Einstein", label_visibility="collapsed")
 

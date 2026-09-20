@@ -54,7 +54,7 @@ def ensure_datasets() -> None:
 # Friendly names shown in the dataset picker instead of raw filenames. Any dataset file
 # that shows up without an entry here falls back to a title-cased version of its stem.
 DATASET_TITLES = {
-    "famous_individuals_pantheon.json": "Pantheon (fame-ranked)",
+    "famous_individuals_pantheon.json": "Pantheon",
     "famous_individuals_cvd.json": "Cross-Verified Database",
 }
 

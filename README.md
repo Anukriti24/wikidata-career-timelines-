@@ -99,11 +99,5 @@ output - no LLM/Ollama and no re-fetching needed, just a re-join:
 .venv/bin/streamlit run app.py
 ```
 
-Open the URL it prints, pick a dataset and a language in the sidebar, and search for a
-name.
-
-## Already have the data and just want to browse?
-
-The built datasets are already included in this repo (`data/final/`), so step 5 above
-works on its own without doing steps 1-4 first - just create the venv, install
-requirements, and run the app.
+Applink - https://4fvzs5wrtxks7pz3cbimc6.streamlit.app/?view=search
+Hosted by Streamlit
